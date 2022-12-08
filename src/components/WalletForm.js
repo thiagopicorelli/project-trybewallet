@@ -7,6 +7,13 @@ class WalletForm extends Component {
   constructor(props) {
     super(props);
     this.fetchCurrencies();
+    this.state = {
+      description: '',
+      value: 0,
+      currency: 'BRL',
+      payment: 'dinheiro',
+      tag: 'Alimentação',
+    };
   }
 
   fetchCurrencies = async () => {
@@ -23,20 +30,54 @@ class WalletForm extends Component {
       });
   };
 
+  adicionarDespesa = async () => {
+    fetch('https://economia.awesomeapi.com.br/json/all')
+      .then((response) => response.json())
+      .then((currencies) => {
+        //dispatch(walletActionCreator('SET_EXPENSES', currencies));
+        console.log(currencies);
+      });
+  };
+
+  onInputChange = ({ target }) => {
+    const name = target.getAttribute('name');
+
+    this.setState((prevState) => ({
+      ...prevState,
+      [name]: target.value,
+    }));
+  };
+
   render() {
+    const {
+      description,
+      value,
+      currency,
+      payment,
+      tag,
+    } = this.state;
+
     const { currencies } = this.props;
+
     return (
       <div>
         <div>
-          <span>Despesa: </span>
-          <input
-            data-testid="value-input"
+          <span>Descrição: </span>
+          <textarea
+            name="description"
+            data-testid="description-input"
+            value={ description }
+            onChange={ this.onInputChange }
           />
         </div>
         <div>
-          <span>Descrição: </span>
-          <textarea
-            data-testid="description-input"
+          <span>Despesa: </span>
+          <input
+            name="value"
+            type="number"
+            data-testid="value-input"
+            value={ value }
+            onChange={ this.onInputChange }
           />
         </div>
         <div>
@@ -44,6 +85,8 @@ class WalletForm extends Component {
           <select
             name="currency"
             data-testid="currency-input"
+            value={ currency }
+            onChange={ this.onInputChange }
           >
             { currencies.map((coin, index) => (
               <option key={ index } value={ coin }>{ coin }</option>
@@ -55,6 +98,8 @@ class WalletForm extends Component {
           <select
             name="payment"
             data-testid="method-input"
+            value={ payment }
+            onChange={ this.onInputChange }
           >
             <option value="dinheiro">Dinheiro</option>
             <option value="credito">Cartão de crédito</option>
@@ -66,6 +111,8 @@ class WalletForm extends Component {
           <select
             name="tag"
             data-testid="tag-input"
+            value={ tag }
+            onChange={ this.onInputChange }
           >
             <option value="Alimentação">Alimentação</option>
             <option value="Lazer">Lazer</option>
@@ -74,6 +121,12 @@ class WalletForm extends Component {
             <option value="Saúde">Saúde</option>
           </select>
         </div>
+        <button
+          type="button"
+          onClick={ this.adicionarDespesa }
+        >
+          Adicionar despesa
+        </button>
       </div>
     );
   }
