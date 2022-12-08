@@ -1,11 +1,28 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 class Header extends Component {
   render() {
+    const { email } = this.props;
+    const expense = 0;
+    const currency = 'BRL';
     return (
-      <div>Header</div>
+      <div>
+        <span data-testid="email-field">{ email }</span>
+        <span data-testid="total-field">{ expense }</span>
+        <span data-testid="header-currency-field">{ currency }</span>
+      </div>
     );
   }
 }
 
-export default Header;
+const mapStateToProps = (state) => ({
+  email: state.user.email,
+});
+
+Header.propTypes = {
+  email: PropTypes.string.isRequired,
+};
+
+export default connect(mapStateToProps)(Header);
