@@ -4,7 +4,7 @@ export const userActionCreator = (account) => ({
   payload: account,
 });
 
-export const walletActionCreator = (wallet) => ({
-  type: 'SET_ACCOUNT',
+export const walletActionCreator = (type, wallet) => ({
+  type,
   payload: wallet,
 });

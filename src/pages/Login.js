@@ -82,11 +82,9 @@ class Login extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => (state);
-
 Login.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
   dispatch: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps)(Login);
+export default connect()(Login);
