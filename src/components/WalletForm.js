@@ -9,9 +9,9 @@ class WalletForm extends Component {
     this.fetchCurrencies();
     this.state = {
       description: '',
-      value: 0,
-      currency: 'BRL',
-      payment: 'dinheiro',
+      value: '',
+      currency: 'USD',
+      payment: 'Dinheiro',
       tag: 'Alimentação',
     };
   }
@@ -21,21 +21,39 @@ class WalletForm extends Component {
     if (currencies.length !== 0) {
       return;
     }
-
     fetch('https://economia.awesomeapi.com.br/json/all')
       .then((response) => response.json())
       .then((money) => {
         const moneys = Object.keys(money).filter((val) => val !== 'USDT');
+        // moneys.unshift('BRL');
         dispatch(walletActionCreator('SET_CURRENCIES', moneys));
       });
   };
 
   adicionarDespesa = async () => {
+    const { dispatch } = this.props;
+    const {
+      description,
+      value,
+      currency,
+      payment,
+      tag,
+    } = this.state;
     fetch('https://economia.awesomeapi.com.br/json/all')
       .then((response) => response.json())
       .then((currencies) => {
-        //dispatch(walletActionCreator('SET_EXPENSES', currencies));
-        console.log(currencies);
+        dispatch(walletActionCreator('ADD_EXPENSES', {
+          description,
+          value,
+          currency,
+          method: payment,
+          tag,
+          exchangeRates: currencies,
+        }));
+        this.setState({
+          description: '',
+          value: '',
+        });
       });
   };
 
@@ -101,9 +119,9 @@ class WalletForm extends Component {
             value={ payment }
             onChange={ this.onInputChange }
           >
-            <option value="dinheiro">Dinheiro</option>
-            <option value="credito">Cartão de crédito</option>
-            <option value="debito">Cartão de débito</option>
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="Cartão de crédito">Cartão de crédito</option>
+            <option value="Cartão de débito">Cartão de débito</option>
           </select>
         </div>
         <div>
