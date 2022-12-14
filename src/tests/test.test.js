@@ -59,6 +59,7 @@ describe('5 - Desenvolva testes para atingir 60% de cobertura total da aplicaÃ§Ã
     });
     expect(walletPage()).toBeInTheDocument();
 
+    // Adicionar despesa
     const VALUE = '5';
     const valInput = screen.getByTestId('value-input');
     act(() => {
@@ -70,6 +71,29 @@ describe('5 - Desenvolva testes para atingir 60% de cobertura total da aplicaÃ§Ã
     await act(() => {
       fireEvent.click(button);
     });
-    expect(screen.getByTestId('total-field')).toHaveTextContent('23.77');
+    const totalField = screen.getByTestId('total-field');
+    expect(totalField).toHaveTextContent('23.77');
+
+    // Editar despesa
+    const editButton = screen.getByTestId('edit-btn');
+    await act(() => {
+      fireEvent.click(editButton);
+    });
+    const VALUE_EDIT = '50';
+    act(() => {
+      fireEvent.change(valInput, { target: { value: VALUE_EDIT } });
+    });
+    const editDespesaButton = screen.getByText('Editar despesa');
+    await act(() => {
+      fireEvent.click(editDespesaButton);
+    });
+    expect(totalField).toHaveTextContent('237.66');
+
+    // Remover despesa
+    const removeButton = screen.getByTestId('delete-btn');
+    await act(() => {
+      fireEvent.click(removeButton);
+    });
+    expect(screen.queryByTestId('delete-btn')).toBeNull();
   });
 });

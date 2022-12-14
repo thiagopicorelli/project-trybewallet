@@ -4,9 +4,14 @@ import PropTypes from 'prop-types';
 import { walletActionCreator } from '../redux/actions';
 
 class Table extends Component {
-  deleteExpense = (index) => {
+  deleteExpense = (id) => {
     const { dispatch } = this.props;
-    dispatch(walletActionCreator('DEL_EXPENSE', index));
+    dispatch(walletActionCreator('DEL_EXPENSE', id));
+  };
+
+  editExpense = (id) => {
+    const { dispatch } = this.props;
+    dispatch(walletActionCreator('SET_EDIT_MODE', { editor: true, id }));
   };
 
   render() {
@@ -28,7 +33,7 @@ class Table extends Component {
             </tr>
           </thead>
           <tbody>
-            { expenses.map((expense, index) => {
+            { expenses.map((expense) => {
               const rate = expense.exchangeRates[expense.currency].ask;
               return (
                 <tr key={ expense.id }>
@@ -43,10 +48,17 @@ class Table extends Component {
                   <td>
                     <button
                       type="button"
-                      data-testid="delete-btn"
-                      onClick={ () => { this.deleteExpense(index); } }
+                      data-testid="edit-btn"
+                      onClick={ () => { this.editExpense(expense.id); } }
                     >
-                      X
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      data-testid="delete-btn"
+                      onClick={ () => { this.deleteExpense(expense.id); } }
+                    >
+                      Deletar
                     </button>
                   </td>
                 </tr>

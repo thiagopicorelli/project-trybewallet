@@ -31,7 +31,7 @@ class WalletForm extends Component {
   };
 
   adicionarDespesa = async () => {
-    const { dispatch } = this.props;
+    const { dispatch, editor, idToEdit, nextId } = this.props;
     const {
       description,
       value,
@@ -39,17 +39,25 @@ class WalletForm extends Component {
       payment,
       tag,
     } = this.state;
+
     fetch('https://economia.awesomeapi.com.br/json/all')
       .then((response) => response.json())
       .then((currencies) => {
-        dispatch(walletActionCreator('ADD_EXPENSES', {
+        const exp = {
           description,
           value,
           currency,
           method: payment,
           tag,
           exchangeRates: currencies,
-        }));
+        };
+        if (editor) {
+          exp.id = idToEdit;
+          dispatch(walletActionCreator('EDIT_EXPENSE', exp));
+        } else {
+          exp.id = nextId;
+          dispatch(walletActionCreator('ADD_EXPENSES', exp));
+        }
         this.setState({
           description: '',
           value: '',
@@ -75,7 +83,7 @@ class WalletForm extends Component {
       tag,
     } = this.state;
 
-    const { currencies } = this.props;
+    const { editor, currencies } = this.props;
 
     return (
       <div>
@@ -143,7 +151,7 @@ class WalletForm extends Component {
           type="button"
           onClick={ this.adicionarDespesa }
         >
-          Adicionar despesa
+          { editor ? 'Editar despesa' : 'Adicionar despesa' }
         </button>
       </div>
     );
@@ -152,11 +160,17 @@ class WalletForm extends Component {
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
+  editor: state.wallet.editor,
+  idToEdit: state.wallet.idToEdit,
+  nextId: state.wallet.nextId,
 });
 
 WalletForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
   dispatch: PropTypes.func.isRequired,
+  editor: PropTypes.bool.isRequired,
+  idToEdit: PropTypes.number.isRequired,
+  nextId: PropTypes.number.isRequired,
 };
 
 export default connect(mapStateToProps)(WalletForm);
