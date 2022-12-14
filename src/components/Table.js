@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { walletActionCreator } from '../redux/actions';
 
 class Table extends Component {
+  deleteExpense = (index) => {
+    const { dispatch } = this.props;
+    dispatch(walletActionCreator('DEL_EXPENSE', index));
+  };
+
   render() {
     const { expenses } = this.props;
     return (
@@ -25,7 +31,7 @@ class Table extends Component {
             { expenses.map((expense, index) => {
               const rate = expense.exchangeRates[expense.currency].ask;
               return (
-                <tr key={ index }>
+                <tr key={ expense.id }>
                   <td>{ expense.description }</td>
                   <td>{ expense.tag }</td>
                   <td>{ expense.method }</td>
@@ -34,7 +40,15 @@ class Table extends Component {
                   <td>{ (+rate).toFixed(2) }</td>
                   <td>{ (expense.value * rate).toFixed(2) }</td>
                   <td>Real</td>
-                  <td>X</td>
+                  <td>
+                    <button
+                      type="button"
+                      data-testid="delete-btn"
+                      onClick={ () => { this.deleteExpense(index); } }
+                    >
+                      X
+                    </button>
+                  </td>
                 </tr>
               );
             }) }
@@ -51,6 +65,7 @@ const mapStateToProps = (state) => ({
 
 Table.propTypes = {
   expenses: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps)(Table);

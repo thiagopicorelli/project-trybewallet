@@ -9,6 +9,8 @@ const INITIAL_STATE = {
 
 const wallet = (state = INITIAL_STATE, action) => {
   const obj = action.payload;
+  let exp = {};
+  let val = 0;
   switch (action.type) {
   case 'SET_CURRENCIES':
     return { ...state, currencies: obj };
@@ -18,6 +20,16 @@ const wallet = (state = INITIAL_STATE, action) => {
       expenses: [...state.expenses, obj],
       expensesValue:
         state.expensesValue + obj.value * +(obj.exchangeRates[obj.currency].ask),
+    };
+  case 'DEL_EXPENSE':
+    exp = state.expenses[obj];
+    val = exp.value * +(exp.exchangeRates[exp.currency].ask);
+    if (state.expensesValue < val) {
+      val = state.expensesValue;
+    }
+    return { ...state,
+      expenses: state.expenses.filter((v, index) => index !== obj),
+      expensesValue: state.expensesValue - val,
     };
   default:
     return state;
