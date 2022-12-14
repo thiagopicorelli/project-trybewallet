@@ -5,7 +5,7 @@ import WalletForm from '../components/WalletForm';
 class Wallet extends React.Component {
   render() {
     return (
-      <div>
+      <div data-testid="wallet-page">
         <Header />
         <WalletForm />
       </div>

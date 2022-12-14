@@ -49,7 +49,7 @@ class Login extends React.Component {
   render() {
     const { email, pass, isValid } = this.state;
     return (
-      <div>
+      <div data-testid="login-page">
         <h3>Login</h3>
         <div>
           <span>Email: </span>
